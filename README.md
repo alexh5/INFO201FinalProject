@@ -8,9 +8,9 @@ The dataset we’ll be working with is Data.Medicare.gov, which provides access 
 The target audience is people that are likely experiencing health problems such as heart failure or heart attack and are interested in surgery including coronary artery bypass grafting (CABG). Possible surgery patients are unsure of which hospital to go to to ensure that they are taken care of and their complications are resolved.
 
 Here are some questions the target audience may consider:
-•	What hospitals are around the country and what are their overall ratings of safety and effectiveness?
-•	Which hospitals employ health measures that may or may not reduce the risk of death or complications after surgery?
-•	Which hospitals carry out successful surgeries with minimal hospital readmissions in regards to heart attack or heart failure?
+-	What hospitals are around the country and what are their overall ratings of safety and effectiveness?
+-	Which hospitals employ health measures that may or may not reduce the risk of death or complications after surgery?
+-	Which hospitals carry out successful surgeries with minimal hospital readmissions in regards to heart attack or heart failure?
 
 The audience would welcome data on what hospitals across the nation are effective and safe in their practices. This would play a factor their decision in choosing the hospital where they think they can receive the best care for their situation.
 
