@@ -1,5 +1,6 @@
 library("jsonlite")
 library("httr")
+library("dplyr")
 
 ## Getting started using API to retrieve relevant data from data.medicare.gov
 
@@ -44,9 +45,16 @@ hospital.spending.result <- fromJSON(hospital.spending.response)
 
 
 
+
+
 ## Data for: What hospitals are around the country and what are their overall ratings of 
 ## safety and effectiveness? 
 hospital.compare.response <- GET(hospital.compare.url)
 hospital.compare.response <- content(hospital.compare.response, "text")
 hospital.compare.result <- fromJSON(hospital.compare.response)
-# View(hospital.compare.result)
+View(hospital.compare.result)
+
+hospital.compare.data <- select(hospital.compare.result, hospital_name, address, city, state, zip_code, phone_number,
+                                hospital_type, hospital_overall_rating, safety_of_care_national_comparison,
+                                effectiveness_of_care_national_comparison, patient_experience_national_comparison)
+View(hospital.compare.data)
