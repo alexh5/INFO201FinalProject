@@ -56,5 +56,18 @@ View(hospital.compare.result)
 
 hospital.compare.data <- select(hospital.compare.result, hospital_name, address, city, state, zip_code, phone_number,
                                 hospital_type, hospital_overall_rating, safety_of_care_national_comparison,
-                                effectiveness_of_care_national_comparison, patient_experience_national_comparison)
+                                effectiveness_of_care_national_comparison, patient_experience_national_comparison,
+                                location)
+
 View(hospital.compare.data)
+
+test <- select(hospital.compare.data, location)
+#%>%
+#  select(test, location$latitude)
+
+
+# must use dollar sign for latitude and longitude for location column
+test2 <- test$location$latitude
+  
+
+View(test)
