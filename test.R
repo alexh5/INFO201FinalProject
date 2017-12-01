@@ -23,11 +23,19 @@ hospital.complications.response <- content(hospital.complications.response, "tex
 hospital.complications.result <- fromJSON(hospital.complications.response)
 # View(hospital.complications.result)
 
+hospital.complications.data <- select(hospital.complications.result, hospital_name, measure_name, score) %>%
+  filter(measure_name == "Death rate for CABG" | measure_name == "Heart failure (HF) 30-Day Mortality Rate" | measure_name == "Acute Myocardial Infarction (AMI) 30-Day Mortality Rate")
+# View(hospital.complications.data)
+
+
 hospital.measures.response <- GET(hospital.measures.url)
 hospital.measures.response <- content(hospital.measures.response, "text")
 hospital.measures.result <- fromJSON(hospital.measures.response)
-# View(hospital.measures.result)
+#View(hospital.measures.result)
 
+hospital.measures.data <- select(hospital.measures.result, hospital_name, measure_name, measure_response) %>%
+  filter(measure_name == "General Surgery Registry" | measure_name == "Safe surgery checklist use (inpatient)" | measure_name == "Safe surgery checklist use (outpatient)")
+View(hospital.measures.data)
 
 
 ## Data for: Which hospitals carry out successful surgeries with minimal hospital readmissions 
@@ -38,12 +46,18 @@ hospital.readmissions.response <- content(hospital.readmissions.response, "text"
 hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
 # View(hospital.readmissions.result)
 
+hospital.readmissions.data <- select(hospital.readmissions.result, hospital_name, measure_id, number_of_discharges,
+                                     number_of_readmissions, readm_ratio) %>%
+  filter(measure_id == "READM-30-CABG-HRRP" | measure_id == "READM-30-HF-HRRP" | measure_id == "READM-30-AMI-HRRP")
+# View(hospital.readmissions.data)
+
 hospital.spending.response <- GET(hospital.spending.url)
 hospital.spending.response <- content(hospital.spending.response, "text")
 hospital.spending.result <- fromJSON(hospital.spending.response)
 # View(hospital.spending.result)
 
-
+hospital.spending.data <- select(hospital.spending.result, hospital_name, score)
+# View(hospital.spending.data)
 
 
 
