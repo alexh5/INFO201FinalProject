@@ -81,7 +81,7 @@ hospital.compare.data <- select(hospital.compare.result, hospital_name, address,
 ##
 #Read in data of hospitals in US
 #setwd("~/info201/INFO201FinalProject")
-US.data <- read.csv("first-2470-latlong.csv")
+US.data <- read.csv("data/first-2470-latlong.csv")
 #Filter only relevent information
 US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
 #Remove locations with NUll data

@@ -11,7 +11,7 @@ library(shiny)
 library(leaflet)
 
 #con for hospitals
-#hospital <- makeIcon("Hospital.jpg",40,40)
+#hospital <- makeIcon("data/Hospital.jpg",40,40)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
