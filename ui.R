@@ -8,6 +8,8 @@
 #
 library(shiny)
 library(plotly)
+source("test.R")
+library(shiny)
 library(leaflet)
 
 # Define UI for application that draws a histogram
@@ -27,7 +29,8 @@ shinyUI(fluidPage(
           )
         ),
         mainPanel(
-          plotOutput("map")
+          #plotOutput("map")
+          leafletOutput("map")
         )
       )
     ),
