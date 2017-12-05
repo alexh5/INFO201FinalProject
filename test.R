@@ -18,20 +18,23 @@ hospital.compare.url <- paste0(hospital.base.url, "xubh-q36u")
 ## Data for: Which hospitals employ health measures that may or may not reduce the risk of
 ## death or complications after surgery?
 
-hospital.complications.response <- GET(hospital.complications.url)
-hospital.complications.response <- content(hospital.complications.response, "text")
-hospital.complications.result <- fromJSON(hospital.complications.response)
+#hospital.complications.response <- GET(hospital.complications.url)
+#hospital.complications.response <- content(hospital.complications.response, "text")
+#hospital.complications.result <- fromJSON(hospital.complications.response)
 # View(hospital.complications.result)
+#hospital.measures.response <- GET(hospital.measures.url)
+#hospital.measures.response <- content(hospital.measures.response, "text")
+#hospital.measures.result <- fromJSON(hospital.measures.response)
+#View(hospital.measures.result)
+
+
 
 hospital.complications.data <- select(hospital.complications.result, hospital_name, measure_name, score) %>%
   filter(measure_name == "Death rate for CABG" | measure_name == "Heart failure (HF) 30-Day Mortality Rate" | measure_name == "Acute Myocardial Infarction (AMI) 30-Day Mortality Rate")
 # View(hospital.complications.data)
 
 
-hospital.measures.response <- GET(hospital.measures.url)
-hospital.measures.response <- content(hospital.measures.response, "text")
-hospital.measures.result <- fromJSON(hospital.measures.response)
-#View(hospital.measures.result)
+
 
 hospital.measures.data <- select(hospital.measures.result, hospital_name, measure_name, measure_response) %>%
   filter(measure_name == "General Surgery Registry" | measure_name == "Safe surgery checklist use (inpatient)" | measure_name == "Safe surgery checklist use (outpatient)")
@@ -41,23 +44,73 @@ View(hospital.measures.data)
 ## Data for: Which hospitals carry out successful surgeries with minimal hospital readmissions 
 ## in regards to heart attack or heart failure?
 
-hospital.readmissions.response <- GET(hospital.readmissions.url)
-hospital.readmissions.response <- content(hospital.readmissions.response, "text")
-hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
-# View(hospital.readmissions.result)
+#hospital.readmissions.response <- GET(hospital.readmissions.url)
+#hospital.readmissions.response <- content(hospital.readmissions.response, "text")
+#hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
+#View(hospital.readmissions.result)
 
-hospital.readmissions.data <- select(hospital.readmissions.result, hospital_name, measure_id, number_of_discharges,
-                                     number_of_readmissions, readm_ratio) %>%
-  filter(measure_id == "READM-30-CABG-HRRP" | measure_id == "READM-30-HF-HRRP" | measure_id == "READM-30-AMI-HRRP")
-# View(hospital.readmissions.data)
+
+
+
+hospital.readmissions.result <- read.csv("data/Hospital_Readmissions_Reduction_Program.csv", stringsAsFactors = F)
+hospital.spending.result <- read.csv("data/Medicare_Hospital_Spending_Per_Patient_-_Hospital.csv")
+
+
+
+hospital.readmissions.data <- select(hospital.readmissions.result, Hospital.Name, Measure.Name, Number.of.Discharges,
+                                     Number.of.Readmissions, Excess.Readmission.Ratio, State) 
+hospital.HF.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-HF-HRRP" & (State == "WA" | State == "CA" | State == "OR")) %>% select(Hospital.Name, State,Measure.Name,Excess.Readmission.Ratio)
+hospital.AMI.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-AMI-HRRP" & (State == "WA" | State == "CA" | State == "OR")) %>% select(Hospital.Name, State,Measure.Name, Excess.Readmission.Ratio)
+hospital.CABG.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-CABG-HRRP" & (State == "WA" | State == "CA" | State == "OR")) %>% select(Hospital.Name, State,Measure.Name, Excess.Readmission.Ratio)
+
+hospital.spending.data <- filter(hospital.spending.result,(State == "WA" | State == "CA" | State == "OR")) %>% select(Hospital.Name, State, Score)
+
+# Get hospital names from readmissions HF
+hospital.names.readmissions <- hospital.HF.data[, 1]
+
+# Filter spending by hospital names from readmissions HF
+hospital.spending.test <- subset(hospital.spending.data, Hospital.Name %in% hospital.names.readmissions)
+hospital.spending.test <- hospital.spending.test[-c(13), ]
+
+
+
+joined.data <- inner_join(hospital.spending.test, hospital.HF.test)
+joined.data <- filter(joined.data, Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
+
+
+
+# Get hospital names for spending
+hospital.names.spending <- hospital.spending.test[, 1]
+hospital.names.spending <- as.character(hospital.names.spending)
+
+# Filter readmissions by hospital names from spending
+hospital.HF.test <- subset(hospital.HF.data, Hospital.Name %in% hospital.names.spending)
+
+
+
+
+
+
+
+
+View(hospital.spending.data)
+
+
+
+hospital.spending.vs.HF.data <- left_join(hospital.spending.test, hospital.HF.data)
+
+test <- merge(data.frame(hospital.HF.data, row.names=NULL), data.frame(hospital.spending.data, row.names=NULL), by = 0, all = TRUE)[-1]
+
+
 
 hospital.spending.response <- GET(hospital.spending.url)
 hospital.spending.response <- content(hospital.spending.response, "text")
 hospital.spending.result <- fromJSON(hospital.spending.response)
-# View(hospital.spending.result)
+#View(hospital.spending.result)
 
 hospital.spending.data <- select(hospital.spending.result, hospital_name, score)
-# View(hospital.spending.data)
+View(hospital.spending.data)
+
 
 
 
@@ -74,6 +127,8 @@ hospital.compare.data <- select(hospital.compare.result, hospital_name, address,
                                 location)
 
 View(hospital.compare.data)
+
+
 
 test <- select(hospital.compare.data, location)
 #%>%
