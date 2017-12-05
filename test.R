@@ -9,7 +9,7 @@ library("stringr")
 ##
 #Read in data of hospitals in US
 #setwd("~/info201/INFO201FinalProject")
-US.data <- read.csv("data/first-2470-latlong.csv")
+US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
 #Filter only relevent information
 US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
 #Remove locations with NUll data
@@ -18,7 +18,7 @@ US.filtered.data <- US.filtered.data[rowSums(is.na(US.filtered.data)) == 0,]
 US.filtered.data$link <- paste0("https://www.google.com/search?q=", US.filtered.data$Hospital.Name)
 US.filtered.data$link <- paste0("<a href='",US.filtered.data$link,"'>"," Link to Hospital" ,"</a>")
 #Fix Hospital name and Phone Numbers
-US.filtered.data$Hospital.Name <- str_to_title(test.next$Hospital.Name)
+US.filtered.data$Hospital.Name <- str_to_title(US.filtered.data$Hospital.Name)
 US.filtered.data$Phone.Number <- gsub("(\\d{3})(\\d{3})(\\d{4})$","\\1-\\2-\\3",US.filtered.data$Phone.Number)
 US.filtered.data$Phone.Number <- sub("(.{3})(.*)", "(\\1)\\2", US.filtered.data$Phone.Number)
 #Convert long and lat to numeric for leaflet
