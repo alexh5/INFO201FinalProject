@@ -6,8 +6,9 @@
 # 
 #    http://shiny.rstudio.com/
 #
-
 library(shiny)
+library(plotly)
+library(leaflet)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -36,12 +37,13 @@ shinyUI(fluidPage(
     tabPanel("Insert Name Here 1",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
+          radioButtons("choices", "Heart Problems",
+                       c("Heart Failure", "Heart Attack", "CABG"),
+                       selected = "Heart Failure"
           )
         ),
         mainPanel(
-          plotOutput("plot1")
+          plotlyOutput("plot1")
         )
       )
     ),
