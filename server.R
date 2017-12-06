@@ -4,13 +4,8 @@ library(plotly)
 library(dplyr)
 library(stringr)
 
-<<<<<<< HEAD
-# Define server logic required to draw a histogram
+# Define server logic
 shinyServer(function(input, output, session) {
-=======
-# Define server logic 
-shinyServer(function(input, output) {
->>>>>>> f786bccb72dde85c694dd1b8961d03a78709dbc6
   
   US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv", stringsAsFactors = FALSE)
   US.data$Hospital.Name <- str_to_title( US.data$Hospital.Name)

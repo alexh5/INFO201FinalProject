@@ -41,10 +41,10 @@ shinyUI(fluidPage(
                       # Defines search bar and drop down list in side panel
                       sidebarLayout(
                         sidebarPanel(
-                          selectInput("hospitalName", label = h3("Search For Hospital"),  
-                                    choices = c("All Hospitals", US.filtered.data$Hospital.Name), selected = "All Hospitals"),
                           selectInput("stateFilter", label = h3("Pick Your State"), 
                                       choices = c("All States and Territories", US.filtered.data$State), selected = "All States and Territories"),
+                          selectInput("hospitalName", label = h3("Search For Hospital"),  
+                                      choices = c("All Hospitals", US.filtered.data$Hospital.Name), selected = "All Hospitals"),
                           helpText("Data from data.medicare.gov")
                         ),
                         
