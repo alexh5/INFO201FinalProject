@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
   US.filtered.data$lat <- as.numeric(as.character(US.filtered.data$lat))
   US.map.data <- US.filtered.data
   # Icon for hospitals
-  hospital <- makeIcon("data/Hospital.jpg", 40, 40)
+  hospital <- makeIcon("data/Hospital.jpg", iconWidth = 50, iconHeight = 50)
   
   output$state <- renderPrint({ input$statefilter })
   output$value <- renderPrint({ input$hospitalName })

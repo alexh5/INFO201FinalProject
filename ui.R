@@ -58,7 +58,7 @@ shinyUI(fluidPage(
                             Medicaid Services (CMS). Clicking on a hospital will show its name, address, phone number, rating,
                             and a link to a Google search."),
                           
-                          tags$style(type = "text/css", "#map {height: calc(90vh - 80px) !important;}"),
+                          tags$style(type = "text/css", "#map {height: calc(85vh - 80px) !important;}"),
                           leafletOutput("map")
                         )
                       )
