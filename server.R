@@ -48,7 +48,6 @@ shinyServer(function(input, output) {
     hospital.CABG.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-CABG-HRRP" & (State == "WA" | State == "CA" | State == "OR")) %>% select(Hospital.Name, State,Measure.Name, Excess.Readmission.Ratio)
     hospital.spending.data <- filter(hospital.spending.result,(State == "WA" | State == "CA" | State == "OR")) %>% select(Hospital.Name, State, Score)
     
-    
     hospital.names.readmissions <- hospital.HF.data[, 1]
     hospital.spending.subset <- subset(hospital.spending.data, Hospital.Name %in% hospital.names.readmissions)
     hospital.spending.subset <- hospital.spending.subset[-c(13), ]
@@ -78,14 +77,18 @@ shinyServer(function(input, output) {
       title.label <- "CABG"
     }
     
+    
     # Graph scatter plot
     graph <- plot_ly(
       data  = target.data, x = ~Score, y = ~Excess.Readmission.Ratio, type = "scatter",
-      text = ~paste("Hospital: ", Hospital.Name, '<br>State:', State)
+      text = ~paste("Hospital: ", Hospital.Name, '<br>State:', State),
+      marker = list(
+        color = factor(target.data$State, labels = c("orange", "purple","green"))
+      )
     ) %>%
       layout(
       title = title.label,
-      xaxis = list(
+      xaxis = list(tickangle = 45,
         title = "Hospital Spending Compared to Average"
       ),
       yaxis = list(

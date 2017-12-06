@@ -8,7 +8,7 @@
 #
 library(shiny)
 library(plotly)
-source("test.R")
+#source("test.R")
 library(shiny)
 library(leaflet)
 
@@ -44,6 +44,7 @@ shinyUI(fluidPage(
                        c("Heart Failure", "Heart Attack", "CABG"),
                        selected = "Heart Failure"
           )
+          
         ),
         mainPanel(
           plotlyOutput("plot1")
@@ -52,6 +53,9 @@ shinyUI(fluidPage(
     ),
     
     
+    
+    
+
     
     
     tabPanel("Insert Name Here 2",
