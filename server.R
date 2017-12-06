@@ -1,19 +1,10 @@
-#
-# This is the server logic of a Shiny web application. You can run the 
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(leaflet)
 library(plotly)
 library(dplyr)
 library(stringr)
 
-# Define server logic required to draw a histogram
+# Define server logic 
 shinyServer(function(input, output) {
   
   US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
@@ -35,9 +26,11 @@ shinyServer(function(input, output) {
   # Icon for hospitals
   hospital <- makeIcon("data/Hospital.jpg", iconWidth = 50, iconHeight = 50)
   
+  # Produces drop down list for state and search bar for hospital
   output$state <- renderPrint({ input$statefilter })
   output$value <- renderPrint({ input$hospitalName })
   
+  # Produces interactive map
   output$map <- renderLeaflet({
     if(input$stateFilter == "All States and Territories") {
       US.map.data <- US.filtered.data
@@ -63,7 +56,9 @@ shinyServer(function(input, output) {
       )
   })
   
-  # Read in big data and filter for columns relative to the three heart problems
+  
+  
+  # Read in big data and filter for columns relative to the three heart problems for first scatter plot
   hospital.readmissions.result <- read.csv("data/Hospital_Readmissions_Reduction_Program.csv", stringsAsFactors = FALSE)
   hospital.spending.result <- read.csv("data/Medicare_Hospital_Spending_Per_Patient_-_Hospital.csv", stringsAsFactors = FALSE)
   hospital.readmissions.data <- select(hospital.readmissions.result, Hospital.Name, Measure.Name, Number.of.Discharges,
@@ -80,6 +75,7 @@ shinyServer(function(input, output) {
   hospital.spending.data <- filter(hospital.spending.result, (State == "WA" | State == "CA" | State == "OR")) %>%
     select(Hospital.Name, State, Score)
   
+  # Finds and select for matching hospital names in the spending and readmissions data set
   hospital.names.readmissions <- hospital.readmissions.HF.data[, 1]
   hospital.spending.subset <- subset(hospital.spending.data, Hospital.Name %in% hospital.names.readmissions)
   hospital.spending.subset <- hospital.spending.subset[-c(13), ]
@@ -89,6 +85,7 @@ shinyServer(function(input, output) {
   hospital.readmissions.AMI.subset <- subset(joined.readmissions.AMI.data, Hospital.Name %in% hospital.names.spending)
   hospital.readmissions.CABG.subset <- subset(joined.readmissions.CABG.data, Hospital.Name %in% hospital.names.spending)
   
+  # Merges relevant spending and readmissions data together to form new data frames for use in graphing
   joined.readmissions.HF <- inner_join(hospital.spending.subset, hospital.readmissions.HF.subset) %>%
     filter(Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
   joined.readmissions.AMI <- inner_join(hospital.spending.subset, hospital.readmissions.AMI.subset) %>%
@@ -96,6 +93,7 @@ shinyServer(function(input, output) {
   joined.readmissions.CABG <- inner_join(hospital.spending.subset, hospital.readmissions.CABG.subset) %>%
     filter(Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
   
+  # Produces first interactive scatter plot
   output$plot1 <- renderPlotly({
     
     # Selects relevant data based on user's selection of heart problem
@@ -126,11 +124,12 @@ shinyServer(function(input, output) {
         yaxis = list(
           title = "Excess Readmission Ratio"
         )
-        
       )
-    
   })
   
+  
+  
+  # Read in big data and filter for columns relative to the three heart problems for the second scatter plot
   hospital.timely.result <- read.csv("data/Timely_and_Effective_Care_-_Hospital.csv", stringsAsFactors = FALSE)
   hospital.timely.result$Score <- as.numeric(hospital.timely.result$Score)
   hospital.timely.data <- filter(hospital.timely.result, Measure.Name == "Aspirin at Arrival" & 
@@ -151,7 +150,7 @@ shinyServer(function(input, output) {
   hospital.death.rate.AMI.data <- filter(hospital.complications.data, 
                                          Measure.Name == "Acute Myocardial Infarction (AMI) 30-Day Mortality Rate")
   
-  
+  # Finds and select for matching hospital names in the aspirin and death rate data set
   hospital.names.timely <- hospital.timely.data[, 1]
   hospital.death.rate.CABG.subset <- subset(hospital.death.rate.CABG.data, Hospital.Name %in% hospital.names.timely)
   hospital.death.rate.HF.subset <- subset(hospital.death.rate.HF.data, Hospital.Name %in% hospital.names.timely)
@@ -160,6 +159,7 @@ shinyServer(function(input, output) {
   hospital.names.death.rate.HF <- hospital.death.rate.HF.subset[, 1]
   hospital.timely.subset <- subset(hospital.timely.data, Hospital.Name %in% hospital.names.death.rate.HF)
   
+  # Merges relevant aspirin and death rate data together to form new data frames for use in graphing
   joined.complications.HF <- inner_join(hospital.death.rate.HF.subset, hospital.timely.subset) %>%
     filter(Aspirin.Score != "Not Available" & Death.Rate.Score != "Not Available")
   joined.complications.AMI <- inner_join(hospital.death.rate.AMI.subset, hospital.timely.subset) %>%
@@ -167,8 +167,11 @@ shinyServer(function(input, output) {
   joined.complications.CABG <- inner_join(hospital.death.rate.CABG.subset, hospital.timely.subset) %>%
     filter(Aspirin.Score != "Not Available" & Death.Rate.Score != "Not Available")
   
+  
+  # Produces second interactive scatter plot
   output$plot2 <- renderPlotly({
 
+    # Selects relevant data based on user's selection of heart problem
     if (input$choices2 == "Heart Failure") {
       target.data <- joined.complications.HF
       title.label <- "Heart Failure"
@@ -196,9 +199,6 @@ shinyServer(function(input, output) {
         yaxis = list(
           title = "Death Rate Score"
         )
-        
       )
-    
   })
-  
 })

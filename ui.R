@@ -1,12 +1,3 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(plotly)
 library(shiny)
@@ -14,14 +5,14 @@ library(leaflet)
 
 US.filtered.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv", stringsAsFactors = FALSE) 
 
-# Define UI for application that draws a histogram
+# Define UI for application 
 shinyUI(fluidPage(
   
   # Application title
-
   titlePanel("Hospitals for Hearts"),
   navbarPage("",
              
+             # Home page
              tabPanel("Home",
                       
                       mainPanel(
@@ -40,10 +31,12 @@ shinyUI(fluidPage(
                         p("-	Which hospitals carry out successful surgeries with minimal hospital readmissions in regards to heart 
                           attack or heart failure?")
                       )
-                      
              ),
              
+             # Map page
              tabPanel("U.S. Hospital Map",
+                      
+                      # Defines search bar and drop down list in side panel
                       sidebarLayout(
                         sidebarPanel(
                           textInput("hospitalName", label = h3("Search For Hospital"), value = "", 
@@ -52,8 +45,9 @@ shinyUI(fluidPage(
                                       choices = c("All States and Territories", US.filtered.data$State), selected = "All States and Territories"),
                           helpText("Data from data.medicare.gov")
                         ),
+                        
+                        # Defines map and its brief description
                         mainPanel(
-                          
                           p("This following map displays hospitals across the United States that are Centers for Medicare & 
                             Medicaid Services (CMS). Clicking on a hospital will show its name, address, phone number, rating,
                             and a link to a Google search."),
@@ -64,7 +58,10 @@ shinyUI(fluidPage(
                       )
              ),
              
+             # First scatter plot
              tabPanel("Hospital Spending vs. Readmission",
+                      
+                      # Defines radio buttons in side panel
                       sidebarLayout(
                         sidebarPanel(
                           radioButtons("choices", "Heart Problems",
@@ -73,6 +70,8 @@ shinyUI(fluidPage(
                           ),
                           helpText("Data from data.medicare.gov")
                         ),
+                        
+                        # Defines scatter plot and its brief description
                         mainPanel(
                           p("In the Hospital Spending vs. Readmission graph, we compared hospitals' spending to their readmission 
                         ratio to see if there's a correlation between the two variables. The hospital spending variable is a ratio 
@@ -85,12 +84,14 @@ shinyUI(fluidPage(
                         patients readmitted is more than the national average. For all three graphs, heart failure, heart attack, 
                         and CABG, there appears to be no correlation between how much a hospital spends and the patient readmission rate."),
                           plotlyOutput("plot1")
-
                         )
                       )
              ),
              
+             # Second scatter plot
              tabPanel("Aspirin Score vs. Death Rate",
+                      
+                      # Defines radio buttons in side panel
                       sidebarLayout(
                         sidebarPanel(
                           radioButtons("choices2", "Heart Problems",
@@ -99,12 +100,13 @@ shinyUI(fluidPage(
                           ),
                           helpText("Data from data.medicare.gov")
                         ),
+                        
+                        # Defines second scatter plot and its brief description
                         mainPanel(
                                p("We compared the death rate of patients to aspirin score in hospitals. The lower the death rate score, the lower death
                         rate reported by the hospital. For the aspirin score, the higher the better, meaning patients received aspirin in time 
                         to alleviate their pain. There does not seem to be any correlation between the data points."),
                           plotlyOutput("plot2")
-                     
                         )
                       )
              )
