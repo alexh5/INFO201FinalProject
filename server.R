@@ -4,10 +4,12 @@ library(plotly)
 library(dplyr)
 library(stringr)
 
-# Define server logic 
-shinyServer(function(input, output) {
+# Define server logic
+shinyServer(function(input, output, session) {
   
-  US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
+  US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv", stringsAsFactors = FALSE)
+  US.data$Hospital.Name <- str_to_title( US.data$Hospital.Name)
+  US.data <- arrange(US.data, Hospital.Name)
   # Filter only relevent information
   US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
   # Remove locations with NUll data
@@ -28,18 +30,33 @@ shinyServer(function(input, output) {
   
   # Produces drop down list for state and search bar for hospital
   output$state <- renderPrint({ input$statefilter })
+  
   output$value <- renderPrint({ input$hospitalName })
   
   # Produces interactive map
   output$map <- renderLeaflet({
-    if(input$stateFilter == "All States and Territories") {
+    if (input$stateFilter == "All States and Territories" & input$hospitalName == "All Hospitals") { #if state is not selected
       US.map.data <- US.filtered.data
-    } else {
+      updateSelectInput(session, "hospitalName", choices = c("All Hospitals", US.map.data$Hospital.Name))
+    } else if (input$stateFilter == "All States and Territories" & input$hospitalName != "All Hospitals") {
+      US.map.data <- filter(US.filtered.data, Hospital.Name == input$hospitalName)
+      updateSelectInput(session, "hospitalName", choices = c("All Hospitals", US.map.data$Hospital.Name))
+      US.map.data <- filter(US.map.data, Hospital.Name == input$hospitalName)
+    } else if (input$stateFilter != "All States and Territories" & input$hospitalName == "All Hospitals") { # if state is selected & hospital is not
+      US.State <- filter(US.filtered.data, State == input$stateFilter)
       US.map.data <- filter(US.filtered.data, State == input$stateFilter)
-    }
-    if( input$hospitalName != "") {
+      updateSelectInput(session, "hospitalName", choices = c("All Hospitals",US.map.data$Hospital.Name))
+    } else if (input$stateFilter != "All States and Territories" & input$hospitalName != "All Hospitals"){
+      US.State <- filter(US.filtered.data, State == input$stateFilter)
+      if(input$hospitalName %in% US.State$Hospital.Name != TRUE) {
+        US.map.data <- filter(US.filtered.data, State == input$stateFilter)
+        updateSelectInput(session, "hospitalName", choices = c("All Hospitals",US.map.data$Hospital.Name)) 
+      }
       US.map.data <- filter(US.map.data, Hospital.Name == str_to_title(input$hospitalName))
     }
+    #if (input$hospitalName != "All Hospitals") { #hospital name is selected
+    #  US.map.data <- filter(US.map.data, Hospital.Name == str_to_title(input$hospitalName))
+    #}
     leaflet(data = US.map.data) %>% addTiles() %>%
       addMarkers( ~US.map.data$lon, ~US.map.data$lat,
                   popup = paste(

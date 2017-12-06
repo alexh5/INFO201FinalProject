@@ -25,7 +25,9 @@ shinyUI(fluidPage(
                         is meant for people suffering from CAD, and is one of the most common major surgeries performed in the
                         U.S. The graft for the is usually a vein from the leg or inner chest wall."),
                         p(),
+
                         p("We used Data.Medicare.gov's official hospital data sets to address the following questions about heart problems:"),
+
                         p("-	What hospitals are around the country and what are their overall ratings of safety and effectiveness?"),
                         p("-	Which hospitals employ timely medical response that may or may not reduce the risk of death or complications?"),
                         p("-	Which hospitals carry out successful surgeries with minimal hospital readmissions?")
@@ -38,10 +40,10 @@ shinyUI(fluidPage(
                       # Defines search bar and drop down list in side panel
                       sidebarLayout(
                         sidebarPanel(
-                          textInput("hospitalName", label = h3("Search For Hospital"), value = "", 
-                                    placeholder = "Please type out the entire hospital name."),
                           selectInput("stateFilter", label = h3("Pick Your State"), 
                                       choices = c("All States and Territories", US.filtered.data$State), selected = "All States and Territories"),
+                          selectInput("hospitalName", label = h3("Search For Hospital"),  
+                                      choices = c("All Hospitals", US.filtered.data$Hospital.Name), selected = "All Hospitals"),
                           helpText("Data from data.medicare.gov")
                         ),
                         
