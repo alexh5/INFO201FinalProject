@@ -1,5 +1,6 @@
 # INFO201FinalProject
 
+Here is the [link](https://alexh5.shinyapps.io/INFO201FinalProject/) to our Shiny app.
 
 ## Project Description:
 
