@@ -6,8 +6,6 @@
 # 
 #    http://shiny.rstudio.com/
 #
-library(shiny)
-library(plotly)
 source("test.R")
 library(shiny)
 library(leaflet)
@@ -24,9 +22,8 @@ shinyUI(fluidPage(
     tabPanel("Map",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
-          )
+          selectInput("statefilter", label = h3("Pick your State"), 
+                      choices = US.filtered.data$State)
         ),
         mainPanel(
           #plotOutput("map")
@@ -40,13 +37,12 @@ shinyUI(fluidPage(
     tabPanel("Insert Name Here 1",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("choices", "Heart Problems",
-                       c("Heart Failure", "Heart Attack", "CABG"),
-                       selected = "Heart Failure"
+          radioButtons("plotType", "Plot type",
+            c("Scatter"="p", "Line"="l")
           )
         ),
         mainPanel(
-          plotlyOutput("plot1")
+          plotOutput("plot1")
         )
       )
     ),

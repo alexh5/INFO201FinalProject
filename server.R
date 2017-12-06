@@ -13,12 +13,16 @@ library(plotly)
 library(dplyr)
 
 
-#con for hospitals
-#hospital <- makeIcon("data/Hospital.jpg",40,40)
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  #icon for hospitals
+  #hospital <- makeIcon("data/Hospital.jpg",40,40)
+  
+  output$state <- renderPrint({ input$statefilter })
   output$map <- renderLeaflet({
+    if(input$statefilter != "") {
+      US.filtered.data <- filter(US.filtered.data, State == input$statefilter)
+    }
     leaflet(data = US.filtered.data) %>% addTiles() %>%
       addMarkers( ~US.filtered.data$lon, ~US.filtered.data$lat,
                  popup = paste(
@@ -33,8 +37,7 @@ shinyServer(function(input, output) {
                  #Implements Icon
                  #, icon = hospital
                  )
-    
-     })
+  })
   
   output$plot1 <- renderPlotly({
     

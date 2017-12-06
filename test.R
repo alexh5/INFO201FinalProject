@@ -49,13 +49,13 @@ hospital.compare.url <- paste0(hospital.base.url, "xubh-q36u")
 ## Data for: Which hospitals employ health measures that may or may not reduce the risk of
 ## death or complications after surgery?
 
-#hospital.complications.response <- GET(hospital.complications.url)
-#hospital.complications.response <- content(hospital.complications.response, "text")
-#hospital.complications.result <- fromJSON(hospital.complications.response)
+hospital.complications.response <- GET(hospital.complications.url)
+hospital.complications.response <- content(hospital.complications.response, "text")
+hospital.complications.result <- fromJSON(hospital.complications.response)
 # View(hospital.complications.result)
-#hospital.measures.response <- GET(hospital.measures.url)
-#hospital.measures.response <- content(hospital.measures.response, "text")
-#hospital.measures.result <- fromJSON(hospital.measures.response)
+hospital.measures.response <- GET(hospital.measures.url)
+hospital.measures.response <- content(hospital.measures.response, "text")
+hospital.measures.result <- fromJSON(hospital.measures.response)
 #View(hospital.measures.result)
 
 
@@ -69,15 +69,15 @@ hospital.complications.data <- select(hospital.complications.result, hospital_na
 
 hospital.measures.data <- select(hospital.measures.result, hospital_name, measure_name, measure_response) %>%
   filter(measure_name == "General Surgery Registry" | measure_name == "Safe surgery checklist use (inpatient)" | measure_name == "Safe surgery checklist use (outpatient)")
-View(hospital.measures.data)
+#View(hospital.measures.data)
 
 
 ## Data for: Which hospitals carry out successful surgeries with minimal hospital readmissions 
 ## in regards to heart attack or heart failure?
 
-#hospital.readmissions.response <- GET(hospital.readmissions.url)
-#hospital.readmissions.response <- content(hospital.readmissions.response, "text")
-#hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
+hospital.readmissions.response <- GET(hospital.readmissions.url)
+hospital.readmissions.response <- content(hospital.readmissions.response, "text")
+hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
 #View(hospital.readmissions.result)
 
 
@@ -124,7 +124,7 @@ hospital.HF.test <- subset(hospital.HF.data, Hospital.Name %in% hospital.names.s
 
 
 
-View(hospital.spending.data)
+#View(hospital.spending.data)
 
 
 
@@ -140,7 +140,7 @@ hospital.spending.result <- fromJSON(hospital.spending.response)
 #View(hospital.spending.result)
 
 hospital.spending.data <- select(hospital.spending.result, hospital_name, score)
-View(hospital.spending.data)
+#View(hospital.spending.data)
 
 
 
@@ -173,4 +173,4 @@ test <- select(hospital.compare.data, location)
 test2 <- test$location$latitude
   
 
-View(test)
+#View(test)
