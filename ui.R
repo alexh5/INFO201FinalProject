@@ -25,7 +25,7 @@ shinyUI(fluidPage(
                         is meant for people suffering from CAD, and is one of the most common major surgeries performed in the
                         U.S. The graft for the is usually a vein from the leg or inner chest wall."),
                         p(),
-                        p("The questions we are trying to address are:"),
+                        p("We used Data.Medicare.gov's official hospital data sets to address the following questions:"),
                         p("-	What hospitals are around the country and what are their overall ratings of safety and effectiveness?"),
                         p("-	Which hospitals employ health measures that may or may not reduce the risk of death or complications"),
                         p("-	Which hospitals carry out successful surgeries with minimal hospital readmissions in regards to heart 
