@@ -16,45 +16,50 @@ library(stringr)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
+  #Filter only relevent information
+  US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
+  #Remove locations with NUll data
+  US.filtered.data <- US.filtered.data[rowSums(is.na(US.filtered.data)) == 0,]
+  #Creates Column for hospital hyperlink
+  US.filtered.data$link <- paste0("https://www.google.com/search?q=", US.filtered.data$Hospital.Name)
+  US.filtered.data$link <- paste0("<a href='",US.filtered.data$link,"'>"," Link to Hospital" ,"</a>")
+  #Fix Hospital name and Phone Numbers
+  US.filtered.data$Hospital.Name <- str_to_title(US.filtered.data$Hospital.Name)
+  US.filtered.data$Phone.Number <- gsub("(\\d{3})(\\d{3})(\\d{4})$","\\1-\\2-\\3",US.filtered.data$Phone.Number)
+  US.filtered.data$Phone.Number <- sub("(.{3})(.*)", "(\\1)\\2", US.filtered.data$Phone.Number)
+  #Convert long and lat to numeric for leaflet
+  US.filtered.data$lon <- as.numeric(as.character(US.filtered.data$lon))
+  US.filtered.data$lat <- as.numeric(as.character(US.filtered.data$lat))
+  US.map.data <- US.filtered.data
   #icon for hospitals
   hospital <- makeIcon("data/Hospital.jpg", 40, 40)
   
-  output$state <- renderPrint({ input$statefilter })
+  output$state <- renderPrint({ input$stateFilter })
+  output$value <- renderPrint({ input$hospitalName })
+  
   output$map <- renderLeaflet({
-    
-    US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
-    #Filter only relevent information
-    US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
-    #Remove locations with NUll data
-    US.filtered.data <- US.filtered.data[rowSums(is.na(US.filtered.data)) == 0,]
-    #Creates Column for hospital hyperlink
-    US.filtered.data$link <- paste0("https://www.google.com/search?q=", US.filtered.data$Hospital.Name)
-    US.filtered.data$link <- paste0("<a href='",US.filtered.data$link,"'>"," Link to Hospital" ,"</a>")
-    #Fix Hospital name and Phone Numbers
-    US.filtered.data$Hospital.Name <- str_to_title(US.filtered.data$Hospital.Name)
-    US.filtered.data$Phone.Number <- gsub("(\\d{3})(\\d{3})(\\d{4})$","\\1-\\2-\\3",US.filtered.data$Phone.Number)
-    US.filtered.data$Phone.Number <- sub("(.{3})(.*)", "(\\1)\\2", US.filtered.data$Phone.Number)
-    #Convert long and lat to numeric for leaflet
-    US.filtered.data$lon <- as.numeric(as.character(US.filtered.data$lon))
-    US.filtered.data$lat <- as.numeric(as.character(US.filtered.data$lat))
-    
-    
-    if(input$statefilter != "") {
-      US.filtered.data <- filter(US.filtered.data, State == input$statefilter)
+    if(input$stateFilter == "All States") {
+      US.map.data <- US.filtered.data
+    } else {
+      US.map.data <- filter(US.filtered.data, State == input$stateFilter)
     }
-    leaflet(data = US.filtered.data) %>% addTiles() %>%
-      addMarkers( ~US.filtered.data$lon, ~US.filtered.data$lat,
+    if( input$hospitalName != "") {
+      US.map.data <- filter(US.map.data, Hospital.Name == str_to_title(input$hospitalName))
+    }
+    leaflet(data = US.map.data) %>% addTiles() %>%
+      addMarkers( ~US.map.data$lon, ~US.map.data$lat,
                   popup = paste(
-                    US.filtered.data$Hospital.Name, "<br>",
-                    US.filtered.data$Address, "<br>",
-                    US.filtered.data$City, US.filtered.data$State, US.filtered.data$ZIP.Code, "<br>",
-                    "Number:", US.filtered.data$Phone.Number, "<br>",
-                    "Hospital overall rating:", US.filtered.data$Hospital.overall.rating, "<br>",
-                    US.filtered.data$link
+                    US.map.data$Hospital.Name, "<br>",
+                    US.map.data$Address, "<br>",
+                    US.map.data$City, US.map.data$State, US.map.data$ZIP.Code, "<br>",
+                    "Number:", US.map.data$Phone.Number, "<br>",
+                    "Hospital overall rating:", US.map.data$Hospital.overall.rating, "<br>",
+                    US.map.data$link
                   ),
-                  clusterOptions = markerClusterOptions(),
+                  clusterOptions = markerClusterOptions()
                   #Implements Icon
-                  icon = hospital
+                  #, icon = hospital
       )
   })
   
@@ -66,13 +71,13 @@ shinyServer(function(input, output) {
     hospital.readmissions.data <- select(hospital.readmissions.result, Hospital.Name, Measure.Name, Number.of.Discharges,
                                          Number.of.Readmissions, Excess.Readmission.Ratio, State) 
     hospital.readmissions.HF.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-HF-HRRP" & 
-                               (State == "WA" | State == "CA" | State == "OR")) %>%
+                                              (State == "WA" | State == "CA" | State == "OR")) %>%
       select(Hospital.Name, State, Measure.Name,Excess.Readmission.Ratio)
     joined.readmissions.AMI.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-AMI-HRRP" &
-                                (State == "WA" | State == "CA" | State == "OR")) %>%
+                                             (State == "WA" | State == "CA" | State == "OR")) %>%
       select(Hospital.Name, State, Measure.Name, Excess.Readmission.Ratio)
     joined.readmissions.CABG.data <- filter(hospital.readmissions.data, Measure.Name == "READM-30-CABG-HRRP" &
-                                 (State == "WA" | State == "CA" | State == "OR")) %>%
+                                              (State == "WA" | State == "CA" | State == "OR")) %>%
       select(Hospital.Name, State, Measure.Name, Excess.Readmission.Ratio)
     hospital.spending.data <- filter(hospital.spending.result, (State == "WA" | State == "CA" | State == "OR")) %>%
       select(Hospital.Name, State, Score)
@@ -80,7 +85,7 @@ shinyServer(function(input, output) {
     hospital.names.readmissions <- hospital.readmissions.HF.data[, 1]
     hospital.spending.subset <- subset(hospital.spending.data, Hospital.Name %in% hospital.names.readmissions)
     hospital.spending.subset <- hospital.spending.subset[-c(13), ]
-
+    
     hospital.names.spending <- hospital.spending.subset[, 1]
     hospital.readmissions.HF.subset <- subset(hospital.readmissions.HF.data, Hospital.Name %in% hospital.names.spending)
     hospital.readmissions.AMI.subset <- subset(joined.readmissions.AMI.data, Hospital.Name %in% hospital.names.spending)
@@ -92,7 +97,7 @@ shinyServer(function(input, output) {
       filter(Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
     joined.readmissions.CABG <- inner_join(hospital.spending.subset, hospital.readmissions.CABG.subset) %>%
       filter(Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
-
+    
     
     # Selects relevant data based on user's selection of heart problem
     if (input$choices == "Heart Failure") {
@@ -132,14 +137,14 @@ shinyServer(function(input, output) {
     hospital.timely.result <- read.csv("data/Timely_and_Effective_Care_-_Hospital.csv", stringsAsFactors = FALSE)
     hospital.timely.result$Score <- as.numeric(hospital.timely.result$Score)
     hospital.timely.data <- filter(hospital.timely.result, Measure.Name == "Aspirin at Arrival" & 
-                                   (State == "WA" | State == "CA" | State == "OR")) %>%
+                                     (State == "WA" | State == "CA" | State == "OR")) %>%
       select(Hospital.Name, State, Score)
     colnames(hospital.timely.data)[3] <- "Aspirin.Score"
     hospital.complications.result <- read.csv("data/Complications_and_Deaths_-_Hospital.csv", stringsAsFactors = FALSE)
     hospital.complications.result$Score <- as.numeric(hospital.complications.result$Score)
     hospital.complications.data <- select(hospital.complications.result, Hospital.Name, State, Measure.Name, Score) %>%
       filter(Measure.Name == "Death rate for CABG" | Measure.Name == "Heart failure (HF) 30-Day Mortality Rate" |
-             Measure.Name == "Acute Myocardial Infarction (AMI) 30-Day Mortality Rate",  
+               Measure.Name == "Acute Myocardial Infarction (AMI) 30-Day Mortality Rate",  
              State == "WA" | State == "CA" | State == "OR")
     colnames(hospital.complications.data)[4] <- "Death.Rate.Score"
     
@@ -154,7 +159,7 @@ shinyServer(function(input, output) {
     hospital.death.rate.CABG.subset <- subset(hospital.death.rate.CABG.data, Hospital.Name %in% hospital.names.timely)
     hospital.death.rate.HF.subset <- subset(hospital.death.rate.HF.data, Hospital.Name %in% hospital.names.timely)
     hospital.death.rate.AMI.subset <- subset(hospital.death.rate.AMI.data, Hospital.Name %in% hospital.names.timely)
-
+    
     hospital.names.death.rate.HF <- hospital.death.rate.HF.subset[, 1]
     hospital.timely.subset <- subset(hospital.timely.data, Hospital.Name %in% hospital.names.death.rate.HF)
     
@@ -192,10 +197,10 @@ shinyServer(function(input, output) {
         yaxis = list(
           title = "Death Rate Score"
         )
-
+        
       )
     
   })
-
+  
 }
 )

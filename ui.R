@@ -13,61 +13,60 @@ library(leaflet)
 
 
 
-US.filtered.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv") 
+US.filtered.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv", stringsAsFactors = FALSE) 
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Insert Title Here"),
+  titlePanel("We Self Made"),
   navbarPage("",
              
-    tabPanel("U.S. Hospital Map",
-      sidebarLayout(
-        sidebarPanel(
-          selectInput(
-            "statefilter", label = h3("Pick your State"), 
-            choices = US.filtered.data$State
-          )
-        ),
-          mainPanel(
-            leafletOutput("map")
-          )
-      )
-    ), 
-
-    tabPanel("Hospital Spending vs. Readmission",
-      sidebarLayout(
-        sidebarPanel(
-          radioButtons("choices", "Heart Problems",
-                       c("Heart Failure", "Heart Attack", "CABG"),
-                       selected = "Heart Failure"
-          )
-        ),
-        mainPanel(
-          plotlyOutput("plot1")
-        )
-      )
-    ),
-    
-    tabPanel("Aspirin Score vs. Death Rate",
-      sidebarLayout(
-        sidebarPanel(
-          radioButtons("choices2", "Heart Problems",
-                       c("Heart Failure", "Heart Attack", "CABG"),
-                       selected = "Heart Failure"
-          )
-        ),
-        mainPanel(
-          plotlyOutput("plot2")
-        )
-      )
-    )
-    
+             tabPanel("U.S. Hospital Map",
+                      sidebarLayout(
+                        sidebarPanel(
+                          textInput("hospitalName", label = h3("Search for Hospital"), value = ""),
+                          selectInput("stateFilter", label = h3("Pick your State"), 
+                                      choices = c("All States", US.filtered.data$State), selected = "All States")
+                        ),
+                        mainPanel(
+                          tags$style(type = "text/css", "#map {height: calc(90vh - 80px) !important;}"),
+                          leafletOutput("map")
+                        )
+                      )
+             ),
+             
+             tabPanel("Hospital Spending vs. Readmission",
+                      sidebarLayout(
+                        sidebarPanel(
+                          radioButtons("choices", "Heart Problems",
+                                       c("Heart Failure", "Heart Attack", "CABG"),
+                                       selected = "Heart Failure"
+                          )
+                        ),
+                        mainPanel(
+                          plotlyOutput("plot1")
+                        )
+                      )
+             ),
+             
+             tabPanel("Aspirin Score vs. Death Rate",
+                      sidebarLayout(
+                        sidebarPanel(
+                          radioButtons("choices2", "Heart Problems",
+                                       c("Heart Failure", "Heart Attack", "CABG"),
+                                       selected = "Heart Failure"
+                          )
+                        ),
+                        mainPanel(
+                          plotlyOutput("plot2")
+                        )
+                      )
+             )
+             
   )
 ))
-             
-    
-    
-  
-  
+
+
+
+
