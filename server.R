@@ -15,10 +15,6 @@ library(stringr)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-  #icon for hospitals
-  hospital <- makeIcon("data/Hospital.jpg", 40, 40)
-  
-  output$state <- renderPrint({ input$statefilter })
   
   US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
   #Filter only relevent information
@@ -35,25 +31,35 @@ shinyServer(function(input, output) {
   #Convert long and lat to numeric for leaflet
   US.filtered.data$lon <- as.numeric(as.character(US.filtered.data$lon))
   US.filtered.data$lat <- as.numeric(as.character(US.filtered.data$lat))
+  US.map.data <- US.filtered.data
+  #icon for hospitals
+  hospital <- makeIcon("data/Hospital.jpg", 40, 40)
+  
+  output$state <- renderPrint({ input$statefilter })
+  output$value <- renderPrint({ input$hospitalName })
   
   output$map <- renderLeaflet({
-    
-    if(input$statefilter != "") {
-      US.filtered.data <- filter(US.filtered.data, State == input$statefilter)
+    if(input$stateFilter == "All States") {
+      US.map.data <- US.filtered.data
+    } else {
+      US.map.data <- filter(US.filtered.data, State == input$stateFilter)
     }
-    leaflet(data = US.filtered.data) %>% addTiles() %>%
-      addMarkers( ~US.filtered.data$lon, ~US.filtered.data$lat,
+    if( input$hospitalName != "") {
+      US.map.data <- filter(US.map.data, Hospital.Name == str_to_title(input$hospitalName))
+    }
+    leaflet(data = US.map.data) %>% addTiles() %>%
+      addMarkers( ~US.map.data$lon, ~US.map.data$lat,
                   popup = paste(
-                    US.filtered.data$Hospital.Name, "<br>",
-                    US.filtered.data$Address, "<br>",
-                    US.filtered.data$City, US.filtered.data$State, US.filtered.data$ZIP.Code, "<br>",
-                    "Number:", US.filtered.data$Phone.Number, "<br>",
-                    "Hospital overall rating:", US.filtered.data$Hospital.overall.rating, "<br>",
-                    US.filtered.data$link
+                    US.map.data$Hospital.Name, "<br>",
+                    US.map.data$Address, "<br>",
+                    US.map.data$City, US.map.data$State, US.map.data$ZIP.Code, "<br>",
+                    "Number:", US.map.data$Phone.Number, "<br>",
+                    "Hospital overall rating:", US.map.data$Hospital.overall.rating, "<br>",
+                    US.map.data$link
                   ),
-                  clusterOptions = markerClusterOptions(),
+                  clusterOptions = markerClusterOptions()
                   #Implements Icon
-                  icon = hospital
+                  #, icon = hospital
       )
   })
   
@@ -162,7 +168,7 @@ shinyServer(function(input, output) {
     filter(Aspirin.Score != "Not Available" & Death.Rate.Score != "Not Available")
   
   output$plot2 <- renderPlotly({
-    
+
     if (input$choices2 == "Heart Failure") {
       target.data <- joined.complications.HF
       title.label <- "Heart Failure"
@@ -190,10 +196,9 @@ shinyServer(function(input, output) {
         yaxis = list(
           title = "Death Rate Score"
         )
-
+        
       )
     
   })
-
-}
-)
+  
+})
