@@ -28,7 +28,8 @@ shinyUI(fluidPage(
                           textInput("hospitalName", label = h3("Search For Hospital"), value = "", 
                                     placeholder = "Please type out the entire hospital name."),
                           selectInput("stateFilter", label = h3("Pick Your State"), 
-                                      choices = c("All States", US.filtered.data$State), selected = "All States")
+                                      choices = c("All States", US.filtered.data$State), selected = "All States"),
+                          helpText("Data from data.medicare.gov")
                         ),
                         mainPanel(
                           tags$style(type = "text/css", "#map {height: calc(90vh - 80px) !important;}"),
@@ -43,7 +44,8 @@ shinyUI(fluidPage(
                           radioButtons("choices", "Heart Problems",
                                        c("Heart Failure", "Heart Attack", "CABG"),
                                        selected = "Heart Failure"
-                          )
+                          ),
+                          helpText("Data from data.medicare.gov")
                         ),
                         mainPanel(
                           plotlyOutput("plot1")
@@ -57,7 +59,8 @@ shinyUI(fluidPage(
                           radioButtons("choices2", "Heart Problems",
                                        c("Heart Failure", "Heart Attack", "CABG"),
                                        selected = "Heart Failure"
-                          )
+                          ),
+                          helpText("Data from data.medicare.gov")
                         ),
                         mainPanel(
                           plotlyOutput("plot2")
