@@ -49,7 +49,7 @@ shinyUI(fluidPage(
                           textInput("hospitalName", label = h3("Search For Hospital"), value = "", 
                                     placeholder = "Please type out the entire hospital name."),
                           selectInput("stateFilter", label = h3("Pick Your State"), 
-                                      choices = c("All States", US.filtered.data$State), selected = "All States"),
+                                      choices = c("All States and Territories", US.filtered.data$State), selected = "All States and Territories"),
                           helpText("Data from data.medicare.gov")
                         ),
                         mainPanel(

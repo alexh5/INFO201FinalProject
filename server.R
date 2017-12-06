@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
   output$value <- renderPrint({ input$hospitalName })
   
   output$map <- renderLeaflet({
-    if(input$stateFilter == "All States") {
+    if(input$stateFilter == "All States and Territories") {
       US.map.data <- US.filtered.data
     } else {
       US.map.data <- filter(US.filtered.data, State == input$stateFilter)
