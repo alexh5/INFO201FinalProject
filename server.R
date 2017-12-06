@@ -14,24 +14,31 @@ library(dplyr)
 
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
+  US.map.data <- US.filtered.data
   #icon for hospitals
   #hospital <- makeIcon("data/Hospital.jpg",40,40)
   
-  output$state <- renderPrint({ input$statefilter })
+  output$state <- renderPrint({ input$stateFilter })
+  output$value <- renderPrint({ str_to_title(input$hospitalName) })
   output$map <- renderLeaflet({
-    if(input$statefilter != "") {
-      US.filtered.data <- filter(US.filtered.data, State == input$statefilter)
+    if(input$stateFilter == "All States") {
+      US.map.data <- US.filtered.data
+    } else {
+      US.map.data <- filter(US.filtered.data, State == input$stateFilter)
     }
-    leaflet(data = US.filtered.data) %>% addTiles() %>%
-      addMarkers( ~US.filtered.data$lon, ~US.filtered.data$lat,
+    if( input$hospitalName != "") {
+      US.map.data <- filter(US.map.data, Hospital.Name == input$hospitalName)
+    }
+    leaflet(data = US.map.data) %>% addTiles() %>%
+      addMarkers( ~US.map.data$lon, ~US.map.data$lat,
                  popup = paste(
-                   US.filtered.data$Hospital.Name, "<br>",
-                   US.filtered.data$Address, "<br>",
-                   US.filtered.data$City, US.filtered.data$State, US.filtered.data$ZIP.Code, "<br>",
-                   "Number:", US.filtered.data$Phone.Number, "<br>",
-                   "Hospital overall rating:", US.filtered.data$Hospital.overall.rating, "<br>",
-                   US.filtered.data$link
+                   US.map.data$Hospital.Name, "<br>",
+                   US.map.data$Address, "<br>",
+                   US.map.data$City, US.map.data$State, US.map.data$ZIP.Code, "<br>",
+                   "Number:", US.map.data$Phone.Number, "<br>",
+                   "Hospital overall rating:", US.map.data$Hospital.overall.rating, "<br>",
+                   US.map.data$link
                                ),
                  clusterOptions = markerClusterOptions()
                  #Implements Icon

@@ -14,19 +14,20 @@ library(leaflet)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Insert Title Here"),
+  titlePanel("Map of Hospitals in United States"),
   navbarPage("",
-             
              
              
     tabPanel("Map",
       sidebarLayout(
         sidebarPanel(
-          selectInput("statefilter", label = h3("Pick your State"), 
-                      choices = US.filtered.data$State)
+          textInput("hospitalName", label = h3("Search for Hospital"), value = ""),
+          fluidRow(column(3, verbatimTextOutput("value"))),
+          selectInput("stateFilter", label = h3("Pick your State"), 
+                      choices = c("All States", US.filtered.data$State), selected = "All States")
         ),
         mainPanel(
-          #plotOutput("map")
+          tags$style(type = "text/css", "#map {height: calc(90vh - 80px) !important;}"),
           leafletOutput("map")
         )
       )

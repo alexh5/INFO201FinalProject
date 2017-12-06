@@ -9,7 +9,7 @@ library("stringr")
 ##
 #Read in data of hospitals in US
 #setwd("~/info201/INFO201FinalProject")
-US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
+US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv", stringsAsFactors = FALSE)
 #Filter only relevent information
 US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
 #Remove locations with NUll data
