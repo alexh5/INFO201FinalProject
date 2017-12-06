@@ -6,64 +6,63 @@
 # 
 #    http://shiny.rstudio.com/
 #
-source("test.R")
+library(shiny)
+library(plotly)
 library(shiny)
 library(leaflet)
+
+
+
+US.filtered.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv") 
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Map of Hospitals in United States"),
+  titlePanel("Insert Title Here"),
   navbarPage("",
              
-             
-    tabPanel("Map",
+    tabPanel("U.S. Hospital Map",
       sidebarLayout(
         sidebarPanel(
-          textInput("hospitalName", label = h3("Search for Hospital"), value = ""),
-          selectInput("stateFilter", label = h3("Pick your State"), 
-                      choices = c("All States", US.filtered.data$State), selected = "All States")
+          selectInput(
+            "statefilter", label = h3("Pick your State"), 
+            choices = US.filtered.data$State
+          )
         ),
-        mainPanel(
-          tags$style(type = "text/css", "#map {height: calc(90vh - 80px) !important;}"),
-          leafletOutput("map")
-        )
+          mainPanel(
+            leafletOutput("map")
+          )
       )
-    ),
-             
-    
-    
-    tabPanel("Insert Name Here 1",
+    ), 
+
+    tabPanel("Hospital Spending vs. Readmission",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
+          radioButtons("choices", "Heart Problems",
+                       c("Heart Failure", "Heart Attack", "CABG"),
+                       selected = "Heart Failure"
           )
         ),
         mainPanel(
-          plotOutput("plot1")
+          plotlyOutput("plot1")
         )
       )
     ),
     
-    
-    
-    
-    tabPanel("Insert Name Here 2",
+    tabPanel("Aspirin Score vs. Death Rate",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
+          radioButtons("choices2", "Heart Problems",
+                       c("Heart Failure", "Heart Attack", "CABG"),
+                       selected = "Heart Failure"
           )
         ),
         mainPanel(
-          plotOutput("plot2")
+          plotlyOutput("plot2")
         )
       )
     )
-
-    
     
   )
 ))
