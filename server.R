@@ -39,8 +39,7 @@ shinyServer(function(input, output, session) {
                    US.map.data$City, US.map.data$State, US.map.data$ZIP.Code, "<br>",
                    "Number:", US.map.data$Phone.Number, "<br>",
                    "Hospital overall rating:", US.map.data$Hospital.overall.rating, "<br>",
-                   US.map.data$link,
-                   US.map.data$Provider.ID
+                   US.map.data$link
                                ),
                  clusterOptions = markerClusterOptions()
                  #Implements Icon
