@@ -20,16 +20,15 @@ shinyUI(fluidPage(
                         death for both men and women in the U.S. CAD occurs when arteries become narrowed due to buildup 
                         of cholesterol and plaque in the inner walls. As a result, the heart is unable to receive adequate 
                         amounts of blood from arteries. Blood clots then form, causing heart attacks which will inflict 
-                        permanent damage on the heart. CAD also weakens heart muscle overtime, if not treated.Coronary artery
+                        permanent damage on the heart. CAD also weakens heart muscle overtime, if not treated. Coronary artery
                         bypass graft (CABG) is a surgery that creates new routes for blood flow to the heart. This surgery
                         is meant for people suffering from CAD, and is one of the most common major surgeries performed in the
                         U.S. The graft for the is usually a vein from the leg or inner chest wall."),
                         p(),
-                        p("We used Data.Medicare.gov's official hospital data sets to address the following questions:"),
+                        p("We used Data.Medicare.gov's official hospital data sets to address the following questions about heart problems:"),
                         p("-	What hospitals are around the country and what are their overall ratings of safety and effectiveness?"),
-                        p("-	Which hospitals employ health measures that may or may not reduce the risk of death or complications"),
-                        p("-	Which hospitals carry out successful surgeries with minimal hospital readmissions in regards to heart 
-                          attack or heart failure?")
+                        p("-	Which hospitals employ timely medical response that may or may not reduce the risk of death or complications?"),
+                        p("-	Which hospitals carry out successful surgeries with minimal hospital readmissions?")
                       )
              ),
              
