@@ -36,26 +36,31 @@ shinyServer(function(input, output, session) {
   observeEvent(input$stateFilter, {rv$lstval <- rv$curval; rv$curval <- input$stateFilter})
   # Produces interactive map
   output$map <- renderLeaflet({
-    if(input$stateFilter == "All States and Territories" & input$hospitalName == "All Hospitals") { #if state & hospital is not selected
+    # If state & hospital are not selected
+    if(input$stateFilter == "All States and Territories" & input$hospitalName == "All Hospitals") { 
       US.map.data <- US.filtered.data
-    } else if (input$stateFilter == "All States and Territories" & input$hospitalName != "All Hospitals") { #if state isnt selected and hospital is
+    # If state isn't selected and hospital is selected
+    } else if (input$stateFilter == "All States and Territories" & input$hospitalName != "All Hospitals") { 
       US.map.data <- US.filtered.data
       if(rv$lstval != "All States and Territories" ) {
         updateSelectInput(session, "hospitalName", choices = c("All Hospitals",US.map.data$Hospital.Name))
         rv$lstval <- "All States and Territories"
       }
-    } else if ( input$stateFilter != "All States and Territories" & input$hospitalName == "All Hospitals") { # if state is selected & hospital is not
+    # If state is selected & hospital is not selected
+    } else if ( input$stateFilter != "All States and Territories" & input$hospitalName == "All Hospitals") { 
       US.State <- filter(US.filtered.data, State == input$stateFilter)
       US.map.data <- filter(US.filtered.data, State == input$stateFilter)
       updateSelectInput(session, "hospitalName", choices = c("All Hospitals",US.map.data$Hospital.Name))
-    } else if (input$stateFilter != "All States and Territories" & input$hospitalName != "All Hospitals"){ # if state and hospitals are selected
+    # If state and hospital are selected
+    } else if (input$stateFilter != "All States and Territories" & input$hospitalName != "All Hospitals"){ 
       US.State <- filter(US.filtered.data, State == input$stateFilter)
       if(input$hospitalName %in% US.State$Hospital.Name != TRUE) {
         US.map.data <- filter(US.filtered.data, State == input$stateFilter)
         updateSelectInput(session, "hospitalName", choices = c("All Hospitals",US.map.data$Hospital.Name)) 
       }
     }
-    if (input$hospitalName != "All Hospitals") { #hospital name is selected
+    # If hospital is selected
+    if (input$hospitalName != "All Hospitals") { 
       US.map.data <- filter(US.map.data, Hospital.Name == str_to_title(input$hospitalName))
     }
     leaflet(data = US.map.data) %>% addTiles() %>%
