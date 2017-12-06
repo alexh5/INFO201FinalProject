@@ -6,7 +6,9 @@
 # 
 #    http://shiny.rstudio.com/
 #
-source("test.R")
+library(shiny)
+library(plotly)
+#source("test.R")
 library(shiny)
 library(leaflet)
 
@@ -37,34 +39,32 @@ shinyUI(fluidPage(
     tabPanel("Insert Name Here 1",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
+          radioButtons("choices", "Heart Problems",
+                       c("Heart Failure", "Heart Attack", "CABG"),
+                       selected = "Heart Failure"
           )
+          
         ),
         mainPanel(
-          plotOutput("plot1")
+          plotlyOutput("plot1")
         )
       )
     ),
     
     
-    
-    
     tabPanel("Insert Name Here 2",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
+          radioButtons("choices2", "Heart Problems",
+                       c("Heart Failure", "Heart Attack", "CABG"),
+                       selected = "Heart Attack"
           )
         ),
         mainPanel(
-          plotOutput("plot2")
+          plotlyOutput("plot2")
         )
       )
     )
-
-    
-    
   )
 ))
              
