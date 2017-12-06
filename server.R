@@ -17,22 +17,22 @@ library(stringr)
 shinyServer(function(input, output) {
   
   US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
-  #Filter only relevent information
+  # Filter only relevent information
   US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
-  #Remove locations with NUll data
+  # Remove locations with NUll data
   US.filtered.data <- US.filtered.data[rowSums(is.na(US.filtered.data)) == 0,]
-  #Creates Column for hospital hyperlink
+  # Creates Column for hospital hyperlink
   US.filtered.data$link <- paste0("https://www.google.com/search?q=", US.filtered.data$Hospital.Name)
   US.filtered.data$link <- paste0("<a href='",US.filtered.data$link,"'>"," Link to Hospital" ,"</a>")
-  #Fix Hospital name and Phone Numbers
+  # Fix Hospital name and Phone Numbers
   US.filtered.data$Hospital.Name <- str_to_title(US.filtered.data$Hospital.Name)
   US.filtered.data$Phone.Number <- gsub("(\\d{3})(\\d{3})(\\d{4})$","\\1-\\2-\\3",US.filtered.data$Phone.Number)
   US.filtered.data$Phone.Number <- sub("(.{3})(.*)", "(\\1)\\2", US.filtered.data$Phone.Number)
-  #Convert long and lat to numeric for leaflet
+  # Convert long and lat to numeric for leaflet
   US.filtered.data$lon <- as.numeric(as.character(US.filtered.data$lon))
   US.filtered.data$lat <- as.numeric(as.character(US.filtered.data$lat))
   US.map.data <- US.filtered.data
-  #icon for hospitals
+  # Icon for hospitals
   hospital <- makeIcon("data/Hospital.jpg", 40, 40)
   
   output$state <- renderPrint({ input$statefilter })
@@ -57,9 +57,9 @@ shinyServer(function(input, output) {
                     "Hospital overall rating:", US.map.data$Hospital.overall.rating, "<br>",
                     US.map.data$link
                   ),
-                  clusterOptions = markerClusterOptions()
+                  clusterOptions = markerClusterOptions(),
                   #Implements Icon
-                  #, icon = hospital
+                  icon = hospital
       )
   })
   

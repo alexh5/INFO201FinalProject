@@ -25,8 +25,9 @@ shinyUI(fluidPage(
              tabPanel("U.S. Hospital Map",
                       sidebarLayout(
                         sidebarPanel(
-                          textInput("hospitalName", label = h3("Search for Hospital"), value = ""),
-                          selectInput("stateFilter", label = h3("Pick your State"), 
+                          textInput("hospitalName", label = h3("Search For Hospital"), value = "", 
+                                    placeholder = "Please type out the entire hospital name."),
+                          selectInput("stateFilter", label = h3("Pick Your State"), 
                                       choices = c("All States", US.filtered.data$State), selected = "All States")
                         ),
                         mainPanel(
