@@ -9,7 +9,7 @@ library("stringr")
 ##
 #Read in data of hospitals in US
 #setwd("~/info201/INFO201FinalProject")
-US.data <- read.csv("data/first-2470-latlong.csv")
+US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
 #Filter only relevent information
 US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
 #Remove locations with NUll data
@@ -18,7 +18,7 @@ US.filtered.data <- US.filtered.data[rowSums(is.na(US.filtered.data)) == 0,]
 US.filtered.data$link <- paste0("https://www.google.com/search?q=", US.filtered.data$Hospital.Name)
 US.filtered.data$link <- paste0("<a href='",US.filtered.data$link,"'>"," Link to Hospital" ,"</a>")
 #Fix Hospital name and Phone Numbers
-US.filtered.data$Hospital.Name <- str_to_title(test.next$Hospital.Name)
+US.filtered.data$Hospital.Name <- str_to_title(US.filtered.data$Hospital.Name)
 US.filtered.data$Phone.Number <- gsub("(\\d{3})(\\d{3})(\\d{4})$","\\1-\\2-\\3",US.filtered.data$Phone.Number)
 US.filtered.data$Phone.Number <- sub("(.{3})(.*)", "(\\1)\\2", US.filtered.data$Phone.Number)
 #Convert long and lat to numeric for leaflet
@@ -49,13 +49,13 @@ hospital.compare.url <- paste0(hospital.base.url, "xubh-q36u")
 ## Data for: Which hospitals employ health measures that may or may not reduce the risk of
 ## death or complications after surgery?
 
-#hospital.complications.response <- GET(hospital.complications.url)
-#hospital.complications.response <- content(hospital.complications.response, "text")
-#hospital.complications.result <- fromJSON(hospital.complications.response)
+hospital.complications.response <- GET(hospital.complications.url)
+hospital.complications.response <- content(hospital.complications.response, "text")
+hospital.complications.result <- fromJSON(hospital.complications.response)
 # View(hospital.complications.result)
-#hospital.measures.response <- GET(hospital.measures.url)
-#hospital.measures.response <- content(hospital.measures.response, "text")
-#hospital.measures.result <- fromJSON(hospital.measures.response)
+hospital.measures.response <- GET(hospital.measures.url)
+hospital.measures.response <- content(hospital.measures.response, "text")
+hospital.measures.result <- fromJSON(hospital.measures.response)
 #View(hospital.measures.result)
 
 
@@ -69,15 +69,15 @@ hospital.complications.data <- select(hospital.complications.result, hospital_na
 
 hospital.measures.data <- select(hospital.measures.result, hospital_name, measure_name, measure_response) %>%
   filter(measure_name == "General Surgery Registry" | measure_name == "Safe surgery checklist use (inpatient)" | measure_name == "Safe surgery checklist use (outpatient)")
-View(hospital.measures.data)
+#View(hospital.measures.data)
 
 
 ## Data for: Which hospitals carry out successful surgeries with minimal hospital readmissions 
 ## in regards to heart attack or heart failure?
 
-#hospital.readmissions.response <- GET(hospital.readmissions.url)
-#hospital.readmissions.response <- content(hospital.readmissions.response, "text")
-#hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
+hospital.readmissions.response <- GET(hospital.readmissions.url)
+hospital.readmissions.response <- content(hospital.readmissions.response, "text")
+hospital.readmissions.result <- fromJSON(hospital.readmissions.response)
 #View(hospital.readmissions.result)
 
 
@@ -124,7 +124,7 @@ hospital.HF.test <- subset(hospital.HF.data, Hospital.Name %in% hospital.names.s
 
 
 
-View(hospital.spending.data)
+#View(hospital.spending.data)
 
 
 
@@ -140,7 +140,7 @@ hospital.spending.result <- fromJSON(hospital.spending.response)
 #View(hospital.spending.result)
 
 hospital.spending.data <- select(hospital.spending.result, hospital_name, score)
-View(hospital.spending.data)
+#View(hospital.spending.data)
 
 
 
@@ -173,4 +173,4 @@ test <- select(hospital.compare.data, location)
 test2 <- test$location$latitude
   
 
-View(test)
+#View(test)

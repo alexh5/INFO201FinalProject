@@ -24,9 +24,8 @@ shinyUI(fluidPage(
     tabPanel("Map",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
-          )
+          selectInput("statefilter", label = h3("Pick your State"), 
+                      choices = US.filtered.data$State)
         ),
         mainPanel(
           #plotOutput("map")
@@ -53,26 +52,19 @@ shinyUI(fluidPage(
     ),
     
     
-    
-    
-
-    
-    
     tabPanel("Insert Name Here 2",
       sidebarLayout(
         sidebarPanel(
-          radioButtons("plotType", "Plot type",
-            c("Scatter"="p", "Line"="l")
+          radioButtons("choices2", "Heart Problems",
+                       c("Heart Failure", "Heart Attack", "CABG"),
+                       selected = "Heart Attack"
           )
         ),
         mainPanel(
-          plotOutput("plot2")
+          plotlyOutput("plot2")
         )
       )
     )
-
-    
-    
   )
 ))
              

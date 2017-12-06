@@ -13,12 +13,16 @@ library(plotly)
 library(dplyr)
 
 
-#con for hospitals
-#hospital <- makeIcon("data/Hospital.jpg",40,40)
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  #icon for hospitals
+  #hospital <- makeIcon("data/Hospital.jpg",40,40)
+  
+  output$state <- renderPrint({ input$statefilter })
   output$map <- renderLeaflet({
+    if(input$statefilter != "") {
+      US.filtered.data <- filter(US.filtered.data, State == input$statefilter)
+    }
     leaflet(data = US.filtered.data) %>% addTiles() %>%
       addMarkers( ~US.filtered.data$lon, ~US.filtered.data$lat,
                  popup = paste(
@@ -33,8 +37,7 @@ shinyServer(function(input, output) {
                  #Implements Icon
                  #, icon = hospital
                  )
-    
-     })
+  })
   
   output$plot1 <- renderPlotly({
     
@@ -51,19 +54,21 @@ shinyServer(function(input, output) {
     hospital.names.readmissions <- hospital.HF.data[, 1]
     hospital.spending.subset <- subset(hospital.spending.data, Hospital.Name %in% hospital.names.readmissions)
     hospital.spending.subset <- hospital.spending.subset[-c(13), ]
-
+    
     hospital.names.spending <- hospital.spending.subset[, 1]
     hospital.HF.subset <- subset(hospital.HF.data, Hospital.Name %in% hospital.names.spending)
     hospital.AMI.subset <- subset(hospital.AMI.data, Hospital.Name %in% hospital.names.spending)
     hospital.CABG.subset <- subset(hospital.CABG.data, Hospital.Name %in% hospital.names.spending)
     
+    
+    # Joins relevant data into big data frame
     joined.HF <- inner_join(hospital.spending.subset, hospital.HF.subset)
     joined.HF <- filter(joined.HF, Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
     joined.AMI <- inner_join(hospital.spending.subset, hospital.AMI.subset)
     joined.AMI <- filter(joined.AMI, Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
     joined.CABG <- inner_join(hospital.spending.subset, hospital.CABG.subset)
     joined.CABG <- filter(joined.CABG, Score != "Not Available" & Excess.Readmission.Ratio != "Not Available")
-
+    
     
     # Selects relevant data based on user's selection of heart problem
     if (input$choices == "Heart Failure") {
@@ -87,21 +92,27 @@ shinyServer(function(input, output) {
       )
     ) %>%
       layout(
-      title = title.label,
-      xaxis = list(tickangle = 45,
-        title = "Hospital Spending Compared to Average"
-      ),
-      yaxis = list(
-        title = "Excess Readmission Ratio"
+        title = title.label,
+        xaxis = list(tickangle = 45,
+                     title = "Hospital Spending Compared to Average"
+        ),
+        yaxis = list(
+          title = "Excess Readmission Ratio"
+        )
+        
       )
-
-    )
-
         
   })
   
+  
+  
+  
   output$plot2 <- renderPlotly({
     
+    
+    
+    
+  
   })
   
  
