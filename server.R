@@ -20,7 +20,7 @@ shinyServer(function(input, output, session) {
   #hospital <- makeIcon("data/Hospital.jpg",40,40)
   
   output$state <- renderPrint({ input$stateFilter })
-  output$value <- renderPrint({ str_to_title(input$hospitalName) })
+  output$value <- renderPrint({ input$hospitalName })
   
   output$map <- renderLeaflet({
     if(input$stateFilter == "All States") {
@@ -29,7 +29,7 @@ shinyServer(function(input, output, session) {
       US.map.data <- filter(US.filtered.data, State == input$stateFilter)
     }
     if( input$hospitalName != "") {
-      US.map.data <- filter(US.map.data, Hospital.Name == input$hospitalName)
+      US.map.data <- filter(US.map.data, Hospital.Name == str_to_title(input$hospitalName))
     }
     leaflet(data = US.map.data) %>% addTiles() %>%
       addMarkers( ~US.map.data$lon, ~US.map.data$lat,
@@ -39,7 +39,8 @@ shinyServer(function(input, output, session) {
                    US.map.data$City, US.map.data$State, US.map.data$ZIP.Code, "<br>",
                    "Number:", US.map.data$Phone.Number, "<br>",
                    "Hospital overall rating:", US.map.data$Hospital.overall.rating, "<br>",
-                   US.map.data$link
+                   US.map.data$link,
+                   US.map.data$Provider.ID
                                ),
                  clusterOptions = markerClusterOptions()
                  #Implements Icon

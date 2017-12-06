@@ -11,7 +11,7 @@ library("stringr")
 #setwd("~/info201/INFO201FinalProject")
 US.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv", stringsAsFactors = FALSE)
 #Filter only relevent information
-US.filtered.data <- select(US.data, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
+US.filtered.data <- select(US.data,Provider.ID, State, lon,lat, Hospital.Name,Phone.Number, Hospital.overall.rating, Address, City, State, ZIP.Code)
 #Remove locations with NUll data
 US.filtered.data <- US.filtered.data[rowSums(is.na(US.filtered.data)) == 0,]
 #Creates Column for hospital hyperlink
