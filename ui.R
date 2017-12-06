@@ -22,7 +22,6 @@ shinyUI(fluidPage(
       sidebarLayout(
         sidebarPanel(
           textInput("hospitalName", label = h3("Search for Hospital"), value = ""),
-          fluidRow(column(3, verbatimTextOutput("value"))),
           selectInput("stateFilter", label = h3("Pick your State"), 
                       choices = c("All States", US.filtered.data$State), selected = "All States")
         ),

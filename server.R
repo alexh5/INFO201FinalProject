@@ -21,6 +21,7 @@ shinyServer(function(input, output, session) {
   
   output$state <- renderPrint({ input$stateFilter })
   output$value <- renderPrint({ str_to_title(input$hospitalName) })
+  
   output$map <- renderLeaflet({
     if(input$stateFilter == "All States") {
       US.map.data <- US.filtered.data
