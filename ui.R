@@ -46,7 +46,7 @@ shinyUI(fluidPage(
                           selectInput("hospitalName", label = h3("Search For Hospital"),  
                                       choices = c("All Hospitals", US.filtered.data$Hospital.Name), selected = "All Hospitals"),
                           helpText("Data from data.medicare.gov")
-                        ),
+                          ),
                         
                         # Defines map and its brief description
                         mainPanel(
