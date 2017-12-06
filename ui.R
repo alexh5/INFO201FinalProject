@@ -6,12 +6,11 @@
 # 
 #    http://shiny.rstudio.com/
 #
+
 library(shiny)
 library(plotly)
 library(shiny)
 library(leaflet)
-
-
 
 US.filtered.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv") 
 
@@ -19,14 +18,14 @@ US.filtered.data <- read.csv("data/General_Hospital_Information_Lat_Lon.csv")
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Insert Title Here"),
+  titlePanel("Hospitals for Hearts"),
   navbarPage("",
              
     tabPanel("U.S. Hospital Map",
       sidebarLayout(
         sidebarPanel(
           selectInput(
-            "statefilter", label = h3("Pick your State"), 
+            "statefilter", label = h3("Pick Your State"), 
             choices = US.filtered.data$State
           )
         ),
